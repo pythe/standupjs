@@ -31,10 +31,11 @@
             }
         ]
     },
+    "sdkVersion": "3",
     "shortName": "Standup",
     "uuid": "4e52704c-01f0-42e1-a25c-f4c3b5b35ee3",
     "versionCode": 1,
-    "versionLabel": "1.0",
+    "versionLabel": "0.1",
     "watchapp": {
         "watchface": false
     }
