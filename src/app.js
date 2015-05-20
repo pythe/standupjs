@@ -5,7 +5,7 @@ var Settings = require('settings');
 var myStories = {};
 
 Settings.config({
-  url: 'https://home.comcast.net/~j_turley/standup.html'  
+  url: 'https://standup-config.cfapps.io/login'
 });
 
 function groupBy(array, func) {
@@ -31,26 +31,22 @@ function objectMap(obj, func) {
 
 var Standup = {
   main: function() {
+    this.attributes.projectId = Settings.option('project_id');
+    this.attributes.apiKey = Settings.option('api_token');
+    this.attributes.initials = Settings.option('initials');
+    
     var main = new UI.Card({
       title: "Standup",
       subtitle: "for Pivotal Tracker",
-      body: "Loading..."
+      body: "proj: " + this.attributes.projectId + "\napi: " + this.attributes.apiKey + "\nin: " + this.attributes.initials,
+      scrollable: true //delete me
     });
     
     main.show();
     
-//     this.attributes.noun = Settings.option('noun');
-//     this.attributes.nounId = Settings.option('nounId');
-//     this.attributes.apiKey = Settings.option('apiKey');
-//     this.attributes.initals = Settings.option('initials');
-    
     this.fetch();
   },
   attributes: {
-    noun: 'projects',
-    nounId: 1286564,
-    apiKey: '',
-    initials: 'JT'
   },
   iconForStoryType: function(type) {
     switch(type) {
@@ -92,14 +88,14 @@ var Standup = {
   },
   fetch: function() {
     var self = this,
-        url = 'https://www.pivotaltracker.com/services/v5/' + this.attributes.noun + '/' + this.attributes.nounId + '/search?query=mywork:' + this.attributes.initials;
+        url = 'https://www.pivotaltracker.com/services/v5/projects/' + this.attributes.projectId + '/search?query=mywork:' + this.attributes.initials;
     console.log("requesting", url);
     ajax(
       {
         url: url,
         type: 'json',
         headers: {
-          "X-TrackerToken": "46b7151864f3f5d1d73dcbd07fccaf46"
+          "X-TrackerToken": self.attributes.apiKey
         }
       },
       function(data, status, request) {
