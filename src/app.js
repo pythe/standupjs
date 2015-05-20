@@ -3,10 +3,13 @@ var ajax = require('ajax');
 var Settings = require('settings');
 
 var myStories = {};
+var url;
 
-Settings.config({
-  url: 'https://standup-config.cfapps.io/login'
-});
+if (Settings.option('api_token')) {
+  url = 'https://standup-config.cfapps.io/login?api_token=' + Settings.option('api_token');
+} else {
+  url = 'https://standup-config.cfapps.io/login';
+}
 
 function groupBy(array, func) {
   var grouped = {},
@@ -29,20 +32,24 @@ function objectMap(obj, func) {
   });
 }
 
+function capitalize(str) {
+  return str[0].toUpperCase() + str.substr(1);
+}
+
 var Standup = {
   main: function() {
     this.attributes.projectId = Settings.option('project_id');
     this.attributes.apiKey = Settings.option('api_token');
     this.attributes.initials = Settings.option('initials');
     
-    var main = new UI.Card({
+    this.loadingCard = new UI.Card({
       title: "Standup",
       subtitle: "for Pivotal Tracker",
       body: "proj: " + this.attributes.projectId + "\napi: " + this.attributes.apiKey + "\nin: " + this.attributes.initials,
       scrollable: true //delete me
     });
     
-    main.show();
+    this.loadingCard.show();
     
     this.fetch();
   },
@@ -63,14 +70,13 @@ var Standup = {
     }
   },
   buildMenu: function(stories) {
-    console.log(6);
     stories.forEach(function(s) {
       s.title = s.name;
-      s.subtitle = s.story_type;
+      s.subtitle = capitalize(s.story_type);
     });
     
     var grouped = groupBy(stories, function(story) {
-      return story.current_state;
+      return capitalize(story.current_state);
     });
 
     var sections = objectMap(grouped, function(key, stories) {
@@ -80,8 +86,6 @@ var Standup = {
       };
     });
 
-    console.log("sections!");
-    console.log(JSON.stringify(sections));
     return {
       sections: sections 
     };
@@ -89,7 +93,6 @@ var Standup = {
   fetch: function() {
     var self = this,
         url = 'https://www.pivotaltracker.com/services/v5/projects/' + this.attributes.projectId + '/search?query=mywork:' + this.attributes.initials;
-    console.log("requesting", url);
     ajax(
       {
         url: url,
@@ -99,10 +102,7 @@ var Standup = {
         }
       },
       function(data, status, request) {
-        console.log(JSON.stringify(data));
-        console.log(1);
         myStories = data.stories.stories;
-        console.log(2);
         
         var menuItems = self.buildMenu.call(self, myStories);
         var menu = new UI.Menu(menuItems);
@@ -110,16 +110,49 @@ var Standup = {
           var card = new UI.Card({
             body: e.item.name
           });
+          self.activeCard = card;
           card.show();
         });
+        self.menu = menu;
         menu.show();
+        self.loadingCard.hide();
       },
       function(data, status, request) {
         console.log("Fetch failed for some reason ", status);
         console.log(JSON.stringify(data));
       }
     );
+  },
+  
+  reset: function() {
+    if (this.menu) {
+      this.menu.hide();
+      this.menu = undefined;
+    }
+    if (this.activeCard) {
+      this.activeCard.hide();
+      this.activeCard = undefined;
+    }
+    if (this.loadingCard) {
+      this.loadingCard.hide();
+      this.loadingCard = undefined;
+    }
   }
 };
+
+Settings.config(
+  {url: url},
+  function() {},
+  function(e) {
+    console.log("configuration changed:");
+    console.log(JSON.stringify(e));
+    if (e.options.clear) {
+      Settings.option('project_id', undefined);
+      Settings.option('api_token', undefined);
+      Settings.option('initials', undefined);
+    }
+    Standup.reset();
+    Standup.main();
+  });
 
 Standup.main();
