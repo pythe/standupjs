@@ -57,9 +57,7 @@ var Standup = {
     
     this.loadingCard = new UI.Card({
       title: "Standup",
-      subtitle: "for Pivotal Tracker",
-      body: "proj: " + this.attributes.projectIds + "\napi: " + this.attributes.apiKey + "\nin: " + this.attributes.initials,
-      scrollable: true //delete me
+      subtitle: "for Pivotal Tracker"
     });
     
     this.loadingCard.show();
@@ -125,6 +123,16 @@ var Standup = {
       var myStories = flatten(resolutions.map(function(data) {
         return data.stories.stories;
       }));
+      self.loadingCard.hide();
+      if (myStories.length === 0) {
+        self.activeCard = new UI.Card({
+          title: 'No Stories',
+          subtitle: 'Get to work!'
+        });
+        self.activeCard.show();
+        
+        return;
+      }
 
       var menuItems = self.buildMenu.call(self, myStories);
       var menu = new UI.Menu(menuItems);
@@ -137,7 +145,6 @@ var Standup = {
       });
       self.menu = menu;
       menu.show();
-      self.loadingCard.hide();
     }).catch(function(error) {
       console.log("error! ", error);
       console.log(JSON.stringify(error));
