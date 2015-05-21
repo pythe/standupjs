@@ -91,14 +91,19 @@ var Standup = {
     var grouped = groupBy(stories, function(story) {
       return capitalize(story.current_state);
     });
-
-    var sections = objectMap(grouped, function(key, stories) {
-      return {
-        title: key,
-        items: stories
-      };
+    
+    var sectionOrder = ["Started", "Finished", "Delivered", "Accepted"],
+        sections = [];
+    
+    sectionOrder.forEach(function(sectionName){
+      if (grouped[sectionName]) {
+        var stories = grouped[sectionName];
+        sections.push({title: sectionName, items: stories}); 
+      }
     });
-
+    
+    
+    
     return {
       sections: sections 
     };
