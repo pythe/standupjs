@@ -1,6 +1,7 @@
 var UI = require('ui');
 var ajax = require('ajax');
 var Settings = require('settings');
+var Promise = require('./es6-promise').Promise;
 
 var myStories = {};
 var url;
@@ -9,6 +10,18 @@ if (Settings.option('api_token')) {
   url = 'https://standup-config.cfapps.io/login?api_token=' + Settings.option('api_token');
 } else {
   url = 'https://standup-config.cfapps.io/login';
+}
+
+function request(options) {
+  return new Promise(function(resolve, reject) {
+    ajax(options, resolve, reject);
+  });
+}
+
+function flatten(arrayOfArrays) {
+  return arrayOfArrays.reduce(function(acc, val) {
+    return acc.concat(val);
+  }, []);
 }
 
 function groupBy(array, func) {
@@ -38,14 +51,14 @@ function capitalize(str) {
 
 var Standup = {
   main: function() {
-    this.attributes.projectId = Settings.option('project_id');
+    this.attributes.projectIds = Settings.option('project_ids');
     this.attributes.apiKey = Settings.option('api_token');
     this.attributes.initials = Settings.option('initials');
     
     this.loadingCard = new UI.Card({
       title: "Standup",
       subtitle: "for Pivotal Tracker",
-      body: "proj: " + this.attributes.projectId + "\napi: " + this.attributes.apiKey + "\nin: " + this.attributes.initials,
+      body: "proj: " + this.attributes.projectIds + "\napi: " + this.attributes.apiKey + "\nin: " + this.attributes.initials,
       scrollable: true //delete me
     });
     
@@ -91,37 +104,42 @@ var Standup = {
     };
   },
   fetch: function() {
-    var self = this,
-        url = 'https://www.pivotaltracker.com/services/v5/projects/' + this.attributes.projectId + '/search?query=mywork:' + this.attributes.initials;
-    ajax(
-      {
+    var self = this, initials = this.attributes.initials;
+    var promises = this.attributes.projectIds.map(function(projectId) {
+      var url = 'https://www.pivotaltracker.com/services/v5/projects/' + projectId + '/search?query=mywork:' + initials;
+      console.log("url ", url);
+      return request({
         url: url,
         type: 'json',
         headers: {
           "X-TrackerToken": self.attributes.apiKey
         }
-      },
-      function(data, status, request) {
-        myStories = data.stories.stories;
-        
-        var menuItems = self.buildMenu.call(self, myStories);
-        var menu = new UI.Menu(menuItems);
-        menu.on('select', function(e) {
-          var card = new UI.Card({
-            body: e.item.name
-          });
-          self.activeCard = card;
-          card.show();
+      });
+    });
+    Promise.all(promises).then(function(resolutions) {
+      var myStories = flatten(resolutions.map(function(data) {
+        return data.stories.stories;
+      }));
+
+      var menuItems = self.buildMenu.call(self, myStories);
+      var menu = new UI.Menu(menuItems);
+      menu.on('select', function(e) {
+        var card = new UI.Card({
+          body: e.item.name
         });
-        self.menu = menu;
-        menu.show();
-        self.loadingCard.hide();
-      },
-      function(data, status, request) {
-        console.log("Fetch failed for some reason ", status);
-        console.log(JSON.stringify(data));
-      }
-    );
+        self.activeCard = card;
+        card.show();
+      });
+      self.menu = menu;
+      menu.show();
+      self.loadingCard.hide();
+    }).catch(function(error) {
+      console.log("error! ", error);
+      console.log(JSON.stringify(error));
+    });
+    Promise.all(promises).catch(function() {
+      console.log("Fetch failed for some reason");
+    });
   },
   
   reset: function() {
