@@ -1,9 +1,9 @@
-var UI = require('ui');
-var ajax = require('ajax');
-var Settings = require('settings');
-var Promise = require('./es6-promise').Promise;
+var UI = require('ui'),
+    ajax = require('ajax'),
+    Settings = require('settings'),
+    Promise = require('./es6-promise').Promise,
+    Vector2 = require('vector2');
 
-var myStories = {};
 var url;
 
 if (Settings.option('api_token')) {
@@ -39,12 +39,6 @@ function groupBy(array, func) {
   return grouped;
 }
 
-function objectMap(obj, func) {
-  return Object.keys(obj).map(function(key) {
-    return func(key, obj[key]);
-  });
-}
-
 function capitalize(str) {
   return str[0].toUpperCase() + str.substr(1);
 }
@@ -54,10 +48,11 @@ var Standup = {
     this.attributes.projectIds = Settings.option('project_ids');
     this.attributes.apiKey = Settings.option('api_token');
     this.attributes.initials = Settings.option('initials');
-    
+    var configMessage = this.attributes.projectIds ? '' : 'Please open settings';
     this.loadingCard = new UI.Card({
       title: "Standup",
-      subtitle: "for Pivotal Tracker"
+      banner: "images/hand-placed.png",
+      body: configMessage
     });
     
     this.loadingCard.show();
@@ -177,7 +172,7 @@ Settings.config(
     console.log("configuration changed:");
     console.log(JSON.stringify(e));
     if (e.options.clear) {
-      Settings.option('project_id', undefined);
+      Settings.option('project_ids', undefined);
       Settings.option('api_token', undefined);
       Settings.option('initials', undefined);
     }

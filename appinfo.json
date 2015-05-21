@@ -3,14 +3,13 @@
     "capabilities": [
         "configurable"
     ],
-    "companyName": "Dungeoneer",
+    "companyName": "Dungeoneer ",
     "longName": "Standup for Pivotal Tracker",
     "projectType": "pebblejs",
     "resources": {
         "media": [
             {
                 "file": "images/menu_icon.png",
-                "menuIcon": true,
                 "name": "IMAGE_MENU_ICON",
                 "type": "png"
             },
@@ -28,6 +27,17 @@
                 "file": "fonts/UbuntuMono-Regular.ttf",
                 "name": "MONO_FONT_14",
                 "type": "font"
+            },
+            {
+                "file": "images/hand-placed.png",
+                "name": "IMAGES_HAND_PLACED_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/tracker_bw_28px.png",
+                "menuIcon": true,
+                "name": "IMAGES_TRACKER_BW_28PX_PNG",
+                "type": "png"
             }
         ]
     },
@@ -35,7 +45,7 @@
     "shortName": "Standup",
     "uuid": "4e52704c-01f0-42e1-a25c-f4c3b5b35ee3",
     "versionCode": 1,
-    "versionLabel": "0.1",
+    "versionLabel": "0.2",
     "watchapp": {
         "watchface": false
     }
