@@ -1,60 +1,72 @@
 {
-  "appKeys": {},
-  "capabilities": [
-    "configurable"
-  ],
-  "companyName": "Dungeoneer ",
-  "longName": "Standup for Pivotal Tracker",
-  "projectType": "pebblejs",
-  "resources": {
-    "media": [
-      {
-        "file": "images/tracker_73px.png",
-        "name": "IMAGES_TRACKER_73PX_PNG",
-        "type": "png"
-      },
-      {
-        "file": "images/tracker_28px.png",
-        "menuIcon": true,
-        "name": "IMAGES_TRACKER_28PX_PNG",
-        "type": "png"
-      },
-      {
-        "file": "images/bug.png",
-        "menuIcon": false,
-        "name": "IMAGES_BUG_PNG",
-        "type": "png"
-      },
-      {
-        "file": "images/chore.png",
-        "menuIcon": false,
-        "name": "IMAGES_CHORE_PNG",
-        "type": "png"
-      },
-      {
-        "file": "images/feature.png",
-        "menuIcon": false,
-        "name": "IMAGES_FEATURE_PNG",
-        "type": "png"
-      },
-      {
-        "file": "images/release.png",
-        "menuIcon": false,
-        "name": "IMAGES_RELEASE_PNG",
-        "type": "png"
-      }
-    ]
-  },
-  "sdkVersion": "3",
-  "shortName": "Standup",
-  "uuid": "4e52704c-01f0-42e1-a25c-f4c3b5b35ee3",
-  "versionCode": 1,
-  "versionLabel": "0.3",
-  "watchapp": {
-    "watchface": false
-  },
-  "targetPlatforms": [
-    "aplite",
-    "basalt"
-  ]
+    "appKeys": {},
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "Dungeoneer ",
+    "longName": "Standup for Pivotal Tracker",
+    "projectType": "pebblejs",
+    "resources": {
+        "media": [
+            {
+                "file": "images/menu_icon.png",
+                "name": "IMAGE_MENU_ICON",
+                "type": "png"
+            },
+            {
+                "file": "images/logo_splash.png",
+                "name": "IMAGE_LOGO_SPLASH",
+                "type": "png"
+            },
+            {
+                "file": "images/tile_splash.png",
+                "name": "IMAGE_TILE_SPLASH",
+                "type": "png"
+            },
+            {
+                "file": "fonts/UbuntuMono-Regular.ttf",
+                "name": "MONO_FONT_14",
+                "type": "font"
+            },
+            {
+                "file": "images/release.png",
+                "name": "IMAGES_RELEASE_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/feature.png",
+                "name": "IMAGES_FEATURE_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/chore.png",
+                "name": "IMAGES_CHORE_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/bug.png",
+                "name": "IMAGES_BUG_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/tracker_28px.png",
+                "menuIcon": true,
+                "name": "IMAGES_TRACKER_28PX_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/tracker_73px.png",
+                "name": "IMAGES_TRACKER_73PX_PNG",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Standup",
+    "uuid": "4e52704c-01f0-42e1-a25c-f4c3b5b35ee3",
+    "versionCode": 1,
+    "versionLabel": "0.3",
+    "watchapp": {
+        "watchface": false
+    }
 }

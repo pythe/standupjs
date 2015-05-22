@@ -1,8 +1,7 @@
 var UI = require('ui'),
     ajax = require('ajax'),
     Settings = require('settings'),
-    Promise = require('./es6-promise').Promise,
-    Vector2 = require('vector2');
+    Promise = require('./es6-promise').Promise;
 
 var url;
 
@@ -51,7 +50,7 @@ var Standup = {
     var configMessage = this.attributes.projectIds ? '' : 'Please open settings';
     this.loadingCard = new UI.Card({
       title: "Standup",
-      banner: "images/hand-placed.png",
+      banner: "images/tracker_73px.png",
       body: configMessage
     });
 
@@ -132,9 +131,12 @@ var Standup = {
       var menuItems = self.buildMenu.call(self, myStories);
       var menu = new UI.Menu(menuItems);
       menu.on('select', function(e) {
+        console.log("Using image ", self.iconForStoryType(e.item.story_type));
         var card = new UI.Card({
-          icon: self.iconForStoryType(e.item.story_type),
-          body: e.item.name
+          subtitle: " ",
+          subicon: self.iconForStoryType(e.item.story_type),
+          body: e.item.name,
+          scrollable: true
         });
         self.activeCard = card;
         card.show();
