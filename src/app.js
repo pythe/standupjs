@@ -32,10 +32,10 @@ function groupBy(array, func) {
     var value = func(element);
     if (!(value in grouped))
       grouped[value] = [];
-  
+
     grouped[value].push(element);
   }
-  
+
   return grouped;
 }
 
@@ -54,9 +54,9 @@ var Standup = {
       banner: "images/hand-placed.png",
       body: configMessage
     });
-    
+
     this.loadingCard.show();
-    
+
     this.fetch();
   },
   attributes: {
@@ -72,7 +72,7 @@ var Standup = {
       case "release":
         return "images/release.png";
       default:
-        return "images/questionMark.png";
+        return "images/feature.png";
     }
   },
   buildMenu: function(stories) {
@@ -80,25 +80,25 @@ var Standup = {
       s.title = s.name;
       s.subtitle = capitalize(s.story_type);
     });
-    
+
     var grouped = groupBy(stories, function(story) {
       return capitalize(story.current_state);
     });
-    
+
     var sectionOrder = ["Started", "Finished", "Delivered", "Accepted"],
         sections = [];
-    
+
     sectionOrder.forEach(function(sectionName){
       if (grouped[sectionName]) {
         var stories = grouped[sectionName];
-        sections.push({title: sectionName, items: stories}); 
+        sections.push({title: sectionName, items: stories});
       }
     });
-    
-    
-    
+
+
+
     return {
-      sections: sections 
+      sections: sections
     };
   },
   fetch: function() {
@@ -125,7 +125,7 @@ var Standup = {
           subtitle: 'Get to work!'
         });
         self.activeCard.show();
-        
+
         return;
       }
 
@@ -133,6 +133,7 @@ var Standup = {
       var menu = new UI.Menu(menuItems);
       menu.on('select', function(e) {
         var card = new UI.Card({
+          icon: self.iconForStoryType(e.item.story_type),
           body: e.item.name
         });
         self.activeCard = card;
@@ -148,7 +149,7 @@ var Standup = {
       console.log("Fetch failed for some reason");
     });
   },
-  
+
   reset: function() {
     if (this.menu) {
       this.menu.hide();
